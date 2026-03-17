@@ -1,13 +1,3 @@
 {
-  "version": 2,
-  "name": "studybot-day5-iitpatna",
-  "builds": [
-    {
-      "src": "dashboard/index.html",
-      "use": "@vercel/static"
-    }
-  ],
-  "routes": [
-    { "src": "/(.*)", "dest": "/dashboard/$1" }
-  ]
+  "outputDirectory": "dashboard"
 }
