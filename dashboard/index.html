@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>StudyBot | Telegram Study Assistant</title>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <!-- Canvas for subtle background animation -->
+  <canvas id="matrixCanvas"></canvas>
+
+  <div class="glass-orb orb-1"></div>
+  <div class="glass-orb orb-2"></div>
+
+  <nav class="navbar">
+    <div class="nav-left">
+      <span class="bot-icon">🤖</span>
+      <span class="brand-text">StudyBot</span>
+      <span class="nav-status">●</span>
+    </div>
+    <div class="nav-center">
+      <div class="pill">Day 5/35 &middot; Deep Learning Edition</div>
+    </div>
+    <div class="nav-right">
+      <a href="https://github.com/shivxmhere/telegram-study-bot" class="btn-outline">Try on Telegram &rarr;</a>
+    </div>
+  </nav>
+
+  <header class="hero">
+    <div class="hero-eyebrow mono" id="heroEyebrow"></div>
+    <h1>Your Personal Study Bot<br><span class="gradient-text">Lives in Telegram.</span></h1>
+    <p class="subline">Send <code>/study [any topic]</code> and get a 3-point summary + auto-generated quiz. Track your score. Build your knowledge streak.</p>
+    <div class="hero-ctas">
+      <a href="#demo" class="btn-primary" onclick="document.querySelector('.main-wrapper').scrollIntoView({behavior:'smooth'})">Try the Demo &rarr;</a>
+      <a href="https://github.com/shivxmhere/telegram-study-bot" target="_blank" class="btn-secondary">View Bot Code &nearr;</a>
+    </div>
+    
+    <div class="command-preview mono shadow-soft">
+      <div class="cmd-line"><span class="prompt">$</span> /study Quantum Computing</div>
+      <div class="cmd-line"><span class="prompt">$</span> /quiz Machine Learning</div>
+      <div class="cmd-line"><span class="prompt">$</span> /score</div>
+    </div>
+  </header>
+
+  <section class="stats-bar">
+    <div class="stat-item"><span class="stat-emoji">📚</span> 6.7M+ Topics Available</div>
+    <div class="stat-item"><span class="stat-emoji">⚡</span> Instant Summaries</div>
+    <div class="stat-item"><span class="stat-emoji">🧠</span> Auto Quizzes</div>
+    <div class="stat-item"><span class="stat-emoji">🔥</span> Streak Tracking</div>
+  </section>
+
+  <main class="main-wrapper" id="demo">
+    <div class="left-pane">
+      <div class="chat-window shadow-xl">
+        <div class="chat-header">
+          <div class="mac-dots">
+            <span class="red"></span>
+            <span class="yellow"></span>
+            <span class="green"></span>
+          </div>
+          <div class="chat-title">
+            🤖 StudyBot
+            <span class="status">● Online</span>
+          </div>
+          <div class="chat-settings">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+          </div>
+        </div>
+        
+        <div class="chat-messages" id="chatMessages">
+          <!-- JS seeded content -->
+        </div>
+        
+        <div class="chat-input-area">
+          <div class="quick-topics" id="quickTopics">
+            <span class="topic-chip">Machine Learning</span>
+            <span class="topic-chip">Black Holes</span>
+            <span class="topic-chip">DNA</span>
+            <span class="topic-chip">Bitcoin</span>
+          </div>
+          <div class="input-wrapper mt-3">
+            <input type="text" id="chatInput" class="chat-input" placeholder="Type /study [topic] or any topic..." autocomplete="off">
+            <button class="icon-btn paperclip">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"></path></svg>
+            </button>
+            <button class="icon-btn send" id="sendBtn">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"></path></svg>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="right-pane">
+      <div class="dash-card dash-row shadow-soft">
+        <div class="dash-score-section">
+          <h3>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"></path><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"></path><path d="M4 22h16"></path><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"></path><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"></path><path d="M18 2H6v7a6 6 0 0 0 12 0V2z"></path></svg> 
+            TOTAL SCORE
+          </h3>
+          <div class="score-display mono gradient-text" id="scoreDisplay">0</div>
+          <div class="progress-label">
+            <span>Level Progress</span>
+            <span id="nextLevelTarget">50 pts</span>
+          </div>
+          <div class="score-progress">
+            <div class="progress-fill"></div>
+          </div>
+        </div>
+
+        <div class="dash-streak-section streak-wrapper">
+          <div class="flame-icon">🔥</div>
+          <div>
+            <div class="streak-count mono" id="streakCount">0 day streak</div>
+            <div class="streak-sub">Keep answering to extend your streak</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="dash-card shadow-soft">
+        <h3>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"></path></svg>
+          QUIZ STATS
+        </h3>
+        <div class="stats-grid">
+          <div class="stat-box">
+            <div class="stat-label">Total Quizzes</div>
+            <div class="stat-value mono" id="totalQuizzesDisplay">0</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-label">Correct</div>
+            <div class="stat-value text-success mono" id="correctDisplay">0</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-label">Wrong</div>
+            <div class="stat-value text-danger mono" id="wrongDisplay">0</div>
+          </div>
+          <div class="stat-box accuracy">
+            <div class="stat-label">Overall Accuracy</div>
+            <div class="stat-value mono gradient-text" id="accuracyDisplay">0%</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="dash-card shadow-soft">
+        <h3>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"></path></svg>
+          RECENT TOPICS
+        </h3>
+        <div class="history-list" id="historyList">
+          <!-- JS history items -->
+        </div>
+      </div>
+
+      <div class="dash-card shadow-soft">
+        <h3>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="4 7 4 4 20 4 20 7"></polyline><line x1="9" y1="20" x2="15" y2="20"></line><line x1="12" y1="4" x2="12" y2="20"></line></svg>
+          BOT COMMANDS
+        </h3>
+        <table class="commands-table">
+          <tr><td class="cmd-name mono">/study [topic]</td><td class="cmd-desc">Get 3-point summary</td></tr>
+          <tr><td class="cmd-name mono">/quiz [topic]</td><td class="cmd-desc">Take a quiz</td></tr>
+          <tr><td class="cmd-name mono">/score</td><td class="cmd-desc">Your stats</td></tr>
+          <tr><td class="cmd-name mono">/history</td><td class="cmd-desc">Past topics</td></tr>
+          <tr><td class="cmd-name mono">/help</td><td class="cmd-desc">All commands</td></tr>
+        </table>
+      </div>
+    </div>
+  </main>
+
+  <section class="how-it-works">
+    <h2 class="section-title">How StudyBot Works</h2>
+    <div class="steps-container">
+      <div class="step-card shadow-soft">
+        <div class="step-icon">
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"></rect><line x1="12" y1="18" x2="12.01" y2="18"></line></svg>
+        </div>
+        <h4>1. Send a Command</h4>
+        <p>Open Telegram, find <strong>@studyiqbot</strong>, and send <code>/study [any topic]</code></p>
+      </div>
+      <div class="step-card shadow-soft">
+        <div class="step-icon">
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path><polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline><line x1="12" y1="22.08" x2="12" y2="12"></line></svg>
+        </div>
+        <h4>2. Wikipedia + NLP</h4>
+        <p>Bot fetches Wikipedia, extracts key sentences, generates MCQ from content</p>
+      </div>
+      <div class="step-card shadow-soft">
+        <div class="step-icon">
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>
+        </div>
+        <h4>3. Track Progress</h4>
+        <p>Every correct answer adds to your score. Build daily streaks. Review history anytime.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="setup">
+    <h2 class="section-title">Run the Bot Yourself</h2>
+    <div class="terminal-block mono shadow-xl">
+      <button class="copy-btn">Copy</button>
+      <pre><code><span class="comment"># Clone the repo</span>
+git clone github.com/shivxmhere/telegram-study-bot
+cd telegram-study-bot/bot
+
+<span class="comment"># Install dependencies</span>
+pip install -r requirements.txt
+
+<span class="comment"># Add your bot token</span>
+cp .env.example .env
+<span class="comment"># Edit .env: BOT_TOKEN=your_token_here</span>
+
+<span class="comment"># Run the bot</span>
+python bot.py</code></pre>
+    </div>
+  </section>
+
+  <footer>
+    <p>Built by Shivam Singh &middot; IIT Patna &middot; Day 5/35 &middot; #35DaysOfProjects</p>
+    <p class="footer-sub">Part of 35 consecutive days of building</p>
+  </footer>
+
+  <div class="toast-container" id="toastContainer"></div>
+
+  <script src="app.js"></script>
+</body>
+</html>
